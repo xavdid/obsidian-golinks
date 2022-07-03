@@ -1,42 +1,6 @@
 import { Plugin, MarkdownRenderChild } from "obsidian";
 
-const goLinkRegex = /go\/[_\d\w-/]+/;
-
-const isTextNodeWithGoLink = (n: Node): boolean =>
-  n.nodeType === Node.TEXT_NODE && Boolean(n.textContent?.match(goLinkRegex));
-
-const parseNextLink = (
-  text: string
-):
-  | { found: false; remaining: string }
-  | { found: true; preText: string; link: string; remaining: string } => {
-  const result = text.match(goLinkRegex);
-  if (result == null) {
-    return { found: false, remaining: text };
-  }
-
-  const preText = text.slice(0, result.index);
-  const link = result[0];
-  const remaining = text.slice((result.index ?? 0) + link.length);
-  return { found: true, preText, link, remaining };
-};
-
-const createLinkTag = (el: Element, goLink: string): Element => {
-  const href = `http://${goLink}`;
-  // <a aria-label-position="top" aria-label="http://go/actual-link" rel="noopener" class="external-link" href="http://go/actual-link" target="_blank">go/bad</a>
-  // this creates it on the parent element we're replacing, so that's probably fine; we keep the reference to it
-  return el.createEl("a", {
-    cls: "external-link",
-    href,
-    text: goLink,
-    attr: {
-      "aria-label": href,
-      "aria-label-position": "top",
-      rel: "noopener",
-      target: "_blank",
-    },
-  });
-};
+import { createLinkTag, isTextNodeWithGoLink, parseNextLink } from "./utils";
 
 /**
  * A class that replaces the content of an element by splitting out `go/links` and linkifying them.
@@ -89,7 +53,6 @@ class GoLinkContainer extends MarkdownRenderChild {
  * basic replacement for `Array.some()`, which doesn't exist on `NodeListOf<ChildNode>`
  * this lets us avoid ever calling the replacement class on extraneous nodes
  */
-
 const anyReplacableNodes = (el: Element): boolean => {
   for (let i = 0; i < el.childNodes.length; i++) {
     const child = el.childNodes[i];

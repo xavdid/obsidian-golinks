@@ -1,6 +1,6 @@
 {
   "name": "obsidian-golinks",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "This is a plugin for Obsidian that renders `go/links` clickable.",
   "main": "main.js",
   "scripts": {

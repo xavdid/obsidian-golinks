@@ -1,19 +1,9 @@
-/* eslint-disable prefer-const */
-import { AsyncLocalStorage } from "async_hooks";
-import {
-  App,
-  Editor,
-  MarkdownView,
-  Modal,
-  Notice,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-  MarkdownRenderChild,
-} from "obsidian";
+import { Plugin, MarkdownRenderChild } from "obsidian";
 
 const goLinkRegex = /go\/[_\d\w-/]+/;
-type RegexResult = ReturnType<string["match"]>;
+
+const isTextNodeWithGoLink = (n: Node): boolean =>
+  n.nodeType === Node.TEXT_NODE && Boolean(n.textContent?.match(goLinkRegex));
 
 const parseNextLink = (
   text: string
@@ -32,23 +22,31 @@ const parseNextLink = (
 };
 
 const createLinkTag = (el: Element, goLink: string): Element => {
-  const a = el.createEl("a");
-
-  // <a aria-label-position="top" aria-label="http://go/actual-link" rel="noopener" class="external-link" href="http://go/actual-link" target="_blank">go/bad</a>
   const href = `http://${goLink}`;
-  a.href = href;
-  a.text = goLink;
-  a.ariaLabel = href;
-  a.setAttribute("aria-label-position", "top");
-  a.rel = "noopener";
-  a.className = "external-link";
-  a.target = "_blank";
-
-  return a;
+  // <a aria-label-position="top" aria-label="http://go/actual-link" rel="noopener" class="external-link" href="http://go/actual-link" target="_blank">go/bad</a>
+  // this creates it on the parent element we're replacing, so that's probably fine; we keep the reference to it
+  return el.createEl("a", {
+    cls: "external-link",
+    href,
+    text: goLink,
+    attr: {
+      "aria-label": href,
+      "aria-label-position": "top",
+      rel: "noopener",
+      target: "_blank",
+    },
+  });
 };
 
 /**
  * A class that replaces the content of an element by splitting out `go/links` and linkifying them.
+ * A given `p` tag could have many children. Many will be `text` nodes, but there will also be `span`s, links, etc.
+ * this function copies the list of children
+ * most pass though as-is, but some `text` nodes are split into many smaller nodes, which makes iterating tricky
+ * the `text` node `before go/example after` becomes 3:
+ *  * text: `before `
+ *  * `<a href="http://go/example" ...>go/example</a>`
+ *  * text: ` after`
  */
 class GoLinkContainer extends MarkdownRenderChild {
   constructor(containerEl: HTMLElement) {
@@ -58,13 +56,9 @@ class GoLinkContainer extends MarkdownRenderChild {
   onload(): void {
     const results: Parameters<typeof this.containerEl.replaceChildren> = [];
 
-    // goes through each child, spliting them into multiple go find the go/links
     this.containerEl.childNodes.forEach((node) => {
-      if (
-        node.nodeType !== Node.TEXT_NODE ||
-        !node.textContent?.match(goLinkRegex)
-      ) {
-        // not text or text doesn't have a link; ignore
+      // quick check if this node is relevant to transform; if not, just pass it through
+      if (!isTextNodeWithGoLink(node)) {
         results.push(node);
         return;
       }
@@ -73,7 +67,6 @@ class GoLinkContainer extends MarkdownRenderChild {
       // we'll go through, splittig it into [before?, go/link, remaining?] until remaining is empty
       let remaining = node.textContent || "";
 
-      // let nextLink: ReturnType<string["match"]> = null;
       while (remaining) {
         const nextLink = parseNextLink(remaining);
 
@@ -90,60 +83,31 @@ class GoLinkContainer extends MarkdownRenderChild {
     this.containerEl.replaceChildren(...results);
   }
 }
+
+/**
+ * check each child node- we're only worried about plaintext nodes with go/links in them
+ * basic replacement for `Array.some()`, which doesn't exist on `NodeListOf<ChildNode>`
+ * this lets us avoid ever calling the replacement class on extraneous nodes
+ */
+
+const anyReplacableNodes = (el: Element): boolean => {
+  for (let i = 0; i < el.childNodes.length; i++) {
+    const child = el.childNodes[i];
+    if (isTextNodeWithGoLink(child)) {
+      return true;
+    }
+  }
+  return false;
+};
+
 export default class GoLinksPlugin extends Plugin {
   async onload() {
     this.registerMarkdownPostProcessor((element, context) => {
-      // todo: add block quote?
-      const elementsToCheck = element.querySelectorAll("p, li");
-
-      elementsToCheck.forEach((el) => {
-        let shouldReplaceChildrenOfContainer = false;
-        // check each child node- we're only worried about plaintext nodes with go/links in them
-        for (let i = 0; i < el.childNodes.length; i++) {
-          const child = el.childNodes[i];
-          if (
-            child.nodeType === Node.TEXT_NODE &&
-            child.textContent?.match(goLinkRegex)
-          ) {
-            shouldReplaceChildrenOfContainer = true;
-            break;
-          }
+      element.querySelectorAll("p, li").forEach((el) => {
+        if (anyReplacableNodes(el)) {
+          context.addChild(new GoLinkContainer(el as HTMLElement));
         }
-
-        if (!shouldReplaceChildrenOfContainer) {
-          return;
-        }
-
-        context.addChild(new GoLinkContainer(el as HTMLElement));
-
-        // console.log("replace me", el, el.textContent);
-
-        // el.replaceChildren("text", "goes", "here");
-        // el.replaceWith(el.createSpan({ text: "link goes here" }));
       });
     });
   }
 }
-
-// elementsToCheck.forEach((element) => {
-//   let changed = false;
-
-// https://www.golinks.com/help/golinks-naming-conventions/
-// const goLinks = (node.textContent ?? "").match(
-// 	/go\/[_\d\w-/]+/
-// );
-
-// for (const goLink of goLinks) {
-// 	changed = true;
-
-// 	console.log(goLink);
-// }
-// });
-// if (changed) {
-// element.setChildrenInPlace(result);
-//     // context.
-//   }
-// });
-// });
-//   }
-// }

@@ -8,7 +8,7 @@ See [releases](https://github.com/xavdid/obsidian-golinks/releases) for the full
 
 ![](https://cdn.zappy.app/42bbacbd01746e5e4e8f5118e2d85b11.png)
 
-```md
+```markdown
 This plugin renders plaintext go/links as clickable! It ignores links in `go/backticks` and links that have already been [go/linkified](http://go/linkified).
 
 > It also works in go/blockquotes, and...

@@ -1,6 +1,6 @@
 import { Plugin, MarkdownRenderChild } from "obsidian";
 
-import { createLinkTag, isTextNodeWithGoLink, parseNextLink } from "./utils";
+import { buildNodeReplacements, isTextNodeWithGoLink } from "./utils";
 
 /**
  * A class that replaces the content of an element by splitting out `go/links` and linkifying them.
@@ -18,33 +18,9 @@ class GoLinkContainer extends MarkdownRenderChild {
   }
 
   onload(): void {
-    const results: Parameters<typeof this.containerEl.replaceChildren> = [];
-
-    this.containerEl.childNodes.forEach((node) => {
-      // quick check if this node is relevant to transform; if not, just pass it through
-      if (!isTextNodeWithGoLink(node)) {
-        results.push(node);
-        return;
-      }
-
-      // now we have text that has at least one link
-      // we'll go through, splittig it into [before?, go/link, remaining?] until remaining is empty
-      let remaining = node.textContent || "";
-
-      while (remaining) {
-        const nextLink = parseNextLink(remaining);
-
-        if (!nextLink.found) {
-          results.push(nextLink.remaining);
-          break;
-        }
-
-        results.push(nextLink.preText);
-        results.push(createLinkTag(this.containerEl, nextLink.link));
-        remaining = nextLink.remaining;
-      }
-    });
-    this.containerEl.replaceChildren(...results);
+    this.containerEl.setChildrenInPlace(
+      buildNodeReplacements(this.containerEl)
+    );
   }
 }
 

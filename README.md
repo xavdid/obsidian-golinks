@@ -22,14 +22,26 @@ This plugin renders plaintext go/links as clickable! It ignores links in `go/bac
 
 ## Installation
 
-This plugin can be installed from the Obsidian Plugins directory!
+### Easiest: Plugin Directory
 
-Alternatively, for a manual install:
+This plugin can be installed from the [Obsidian Plugins directory](https://obsidian.md/plugins?search=golinks)!
+
+You can also click this link to open the page directly in Obsidian: https://obsidian.md/plugins?id=obsidian-golinks
+
+### Medium: From Releases
+
+1. create the `path/to/your/vault/.obsidian/plugins/obsidian-golinks` folder
+1. go to the latest [GitHub release](https://github.com/xavdid/obsidian-golinks/releases)
+1. download the `main.js` and `manifest.json`
+1. move both of those files to the folder created in step 1
+1. in Obsidian settings, enable the plugin like normal
+
+### Most Involved: Build From Source
 
 1. clone this repo into `path/to/your/vault/.obsidian/plugins/obsidian-golinks`
-2. in that folder, run `yarn` (or `npm i`)
-3. run `yarn build`
-4. In Obsidian settings, enable the plugin like normal.
+2. in that folder install dependencies by running `yarn`
+3. build w/ `yarn build`
+4. in Obsidian settings, enable the plugin like normal
 
 ## Considerations
 

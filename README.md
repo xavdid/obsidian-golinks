@@ -2,8 +2,6 @@
 
 This is a simple [Obsidian](https://obsidian.md) plugin for rendering plaintext [GoLinks](https://www.golinks.io/) (like go/links) so that they're clickable.
 
-See [releases](https://github.com/xavdid/obsidian-golinks/releases) for the full changelog.
-
 ## Demo
 
 ![](https://cdn.zappy.app/42bbacbd01746e5e4e8f5118e2d85b11.png)

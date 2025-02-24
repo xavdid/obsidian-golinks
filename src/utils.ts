@@ -1,4 +1,5 @@
-export const goLinkRegex = /\bgo\/[_\d\w-/]+/;
+export const goLinkRegex = /\b(https?:\/\/)?go\/[_\d\w\-/]+/;
+export const noProtocolGoLink = /\bgo\/[_\d\w\-/]+/;
 
 export const isTextNodeWithGoLink = (n: Node): boolean =>
   n.nodeType === Node.TEXT_NODE && Boolean(n.textContent?.match(goLinkRegex));
@@ -20,13 +21,16 @@ export const parseNextLink = (
 };
 
 export const createLinkTag = (el: Element, goLink: string): Element => {
-  const href = `http://${goLink}`;
+  const href = goLink.startsWith("http") ? goLink : `http://${goLink}`;
+  // if processing a fully-qualified link, don't show the protocol in the link text (to match other go/links)
+  const label = goLink.replace(/https?:\/\//, "");
+
   // <a aria-label-position="top" aria-label="http://go/actual-link" rel="noopener" class="external-link" href="http://go/actual-link" target="_blank">go/actual-link</a>
   // this creates it on the parent element we're replacing, so that's probably fine; we keep the reference to it
   return el.createEl("a", {
     cls: "external-link",
     href,
-    text: goLink,
+    text: label,
     attr: {
       "aria-label": href,
       "aria-label-position": "top",

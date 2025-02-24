@@ -4,7 +4,7 @@ This is a simple [Obsidian](https://obsidian.md) plugin for rendering plaintext 
 
 ## Demo
 
-![](https://cdn.zappy.app/42bbacbd01746e5e4e8f5118e2d85b11.png)
+![](https://cdn.zappy.app/23089211a24fdb8588cb0353366521e6.png)
 
 ```markdown
 This plugin renders plaintext go/links as clickable! It ignores links in `go/backticks` and links that have already been [go/linkified](http://go/linkified).
@@ -16,6 +16,8 @@ This plugin renders plaintext go/links as clickable! It ignores links in `go/bac
 - in
 - go/lists!
 - neat, right?
+
+Lastly, you can paste https://go/full-links that get handled too!
 ```
 
 ## Installation

@@ -14,6 +14,8 @@ describe("go/link regex", () => {
     ["go/snake_case", true],
     ["go/call-123", true],
     ["go/kitchen_sink-123/cool", true],
+    ["to match link w/ protocol https://go/link", true],
+    ["to match link w/ http protocol http://go/link", true],
     // ["go//hello-世界", true], // doesn't work yet
   ]).test(
     'expect "%s" to match? %s',

@@ -28,13 +28,14 @@ export PATH := "./node_modules/.bin:" + env_var('PATH')
     tsc -noEmit -skipLibCheck
     node esbuild.config.mjs production
 
-# increment the version in the manifest file
-@bump: build
+# increment the version in the manifest file & package.json
+@bump level:
+    {{ assert(level =~ "(major)|(minor)|(patch)", "specify one of: [`major`, `minor`, `patch`]") }}
     # use yarn to to the bumping, since it handles setting the version in the environment
-    yarn version
+    yarn version --{{ level }}
 
 # generate a GH release and add the required files
-@release: bump
+@release level: (bump level)
     git push
     git push --tags
     gh release create $(git describe --tags --abbrev=0) main.js manifest.json

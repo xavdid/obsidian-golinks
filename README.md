@@ -2,6 +2,15 @@
 
 This is a simple [Obsidian](https://obsidian.md) plugin for rendering plaintext [GoLinks](https://www.golinks.io/) (like go/links) so that they're clickable.
 
+## Features
+
+- Makes go/links clickable in all Obsidian modes:
+  - Reading mode
+  - Source editor mode
+  - Live Preview mode
+- Ignores go/links in code blocks and backticks
+- Handles links with or without protocols (go/link or https://go/link)
+
 ## Demo
 
 ![](https://cdn.zappy.app/23089211a24fdb8588cb0353366521e6.png)
@@ -58,3 +67,8 @@ Under the hood, it:
 - runs the build
 - updates manifest files
 - generates a github release with those files
+
+## Contributors
+
+- [David Brownman (@xavdid)](https://xavd.id) - Original author
+- [Alex Mittell (@amittell)](https://github.com/amittell) - Added support for go/links in editor mode

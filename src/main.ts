@@ -1,6 +1,6 @@
 import { Plugin, MarkdownRenderChild } from "obsidian";
-
 import { buildNodeReplacements, isTextNodeWithGoLink } from "./utils";
+import { goLinksEditorExtension } from "./editor-extension";
 
 /**
  * A class that replaces the content of an element by splitting out `go/links` and linkifying them.
@@ -41,12 +41,34 @@ const anyReplacableNodes = (el: Element): boolean => {
 
 export default class GoLinksPlugin extends Plugin {
   async onload() {
-    this.registerMarkdownPostProcessor((element, context) => {
-      element.querySelectorAll("p, li").forEach((el) => {
+    // Register for reading mode (existing functionality)
+    this.registerMarkdownPostProcessor((element: HTMLElement, context: any) => {
+      element.querySelectorAll("p, li").forEach((el: Element) => {
         if (anyReplacableNodes(el)) {
           context.addChild(new GoLinkContainer(el as HTMLElement));
         }
       });
     });
+    
+    // Register for editor mode (new functionality)
+    try {
+      this.registerEditorExtension(goLinksEditorExtension());
+      
+      // Add CSS for styling go/links in editor
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `
+        .cm-go-link {
+          color: var(--link-color);
+          text-decoration: underline;
+          cursor: pointer;
+        }
+      `;
+      document.head.appendChild(styleEl);
+      this.register(() => styleEl.remove());
+      
+      console.log("GoLinks: Editor extension registered successfully");
+    } catch (error: unknown) {
+      console.error("GoLinks: Failed to register editor extension", error);
+    }
   }
 }

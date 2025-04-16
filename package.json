@@ -27,7 +27,10 @@
     "obsidian": "latest",
     "ts-jest": "^28.0.5",
     "tslib": "2.4.0",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.0.0",
+    "@codemirror/language": "^6.0.0"
   },
   "jest": {
     "verbose": true,

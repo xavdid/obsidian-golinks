@@ -9,7 +9,7 @@ This is a simple [Obsidian](https://obsidian.md) plugin for rendering plaintext 
   - Source editor mode
   - Live Preview mode
 - Ignores go/links in code blocks and backticks
-- Handles links with or without protocols (go/link or https://go/link)
+- Handles links with or without protocols (`go/link` or `https://go/link`)
 
 ## Demo
 
@@ -70,5 +70,5 @@ Under the hood, it:
 
 ## Contributors
 
-- [David Brownman (@xavdid)](https://xavd.id) - Original author
-- [Alex Mittell (@amittell)](https://github.com/amittell) - Added support for go/links in editor mode
+- [David Brownman](https://xavd.id) (@xavdid) - Original author
+- [Alex Mittell](https://github.com/amittell) (@amittell) - Added support for go/links in editor mode

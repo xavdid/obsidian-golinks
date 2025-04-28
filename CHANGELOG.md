@@ -2,7 +2,9 @@
 
 This project uses [SemVer](https://semver.org/) for versioning. Its public APIs, runtime support, and documented file locations won't change incompatibly outside of major versions (once version 1.0.0 has been released). There may be breaking changes in minor releases before 1.0.0 and will be noted in these release notes.
 
-## unreleased
+## 0.2.0
+
+_released `2025-04-27`_
 
 - Added `go/link` support in live preview & source modes ([#6](https://github.com/xavdid/obsidian-golinks/pull/6), [#7](https://github.com/xavdid/obsidian-golinks/pull/7))
 

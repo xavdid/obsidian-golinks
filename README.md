@@ -9,7 +9,7 @@ This is a simple [Obsidian](https://obsidian.md) plugin for rendering plaintext 
   - Source editor mode
   - Live Preview mode
 - Ignores go/links in code blocks and backticks
-- Handles links with or without protocols (`go/link` or `https://go/link`)
+- Handles links with or without protocols (`go/link` & `https://go/link`)
 
 ## Demo
 
@@ -48,9 +48,8 @@ You can also click this link to open the page directly in Obsidian: https://obsi
 ### Most Involved: Build From Source
 
 1. clone this repo into `path/to/your/vault/.obsidian/plugins/obsidian-golinks`
-2. in that folder install dependencies by running `yarn`
-3. build w/ `yarn build`
-4. in Obsidian settings, enable the plugin like normal
+2. build w/ `just build` (after installing [just](https://github.com/casey/just) if you need it)
+3. in Obsidian settings, enable the plugin like normal
 
 ## Considerations
 

@@ -4,8 +4,7 @@ This project uses [SemVer](https://semver.org/) for versioning. Its public APIs,
 
 ## unreleased
 
-- Added go/link detection for editor mode
-- Enhanced link detection to avoid conflicts with Obsidian's built-in renderer
+- Added `go/link` support in live preview & source modes ([#6](https://github.com/xavdid/obsidian-golinks/pull/6), [#7](https://github.com/xavdid/obsidian-golinks/pull/7))
 
 ## 0.1.5
 

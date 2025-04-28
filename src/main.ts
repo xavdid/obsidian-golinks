@@ -1,5 +1,12 @@
-import { MarkdownRenderChild, Plugin } from "obsidian";
-import { goLinksEditorExtension } from "./editor-extension";
+import {
+  MarkdownPostProcessorContext,
+  MarkdownRenderChild,
+  Plugin,
+} from "obsidian";
+import {
+  GOLINK_LIVE_PREVIEW_CLASS,
+  goLinksEditorExtension,
+} from "./editor-extension";
 import { buildNodeReplacements, isTextNodeWithGoLink } from "./utils";
 
 /**
@@ -41,26 +48,29 @@ const anyReplacableNodes = (el: Element): boolean => {
 
 export default class GoLinksPlugin extends Plugin {
   async onload() {
-    // Register for reading mode (existing functionality)
-    this.registerMarkdownPostProcessor((element: HTMLElement, context: any) => {
-      element.querySelectorAll("p, li").forEach((el: Element) => {
-        if (anyReplacableNodes(el)) {
-          context.addChild(new GoLinkContainer(el as HTMLElement));
-        }
-      });
-    });
+    // Register for reading mode
+    this.registerMarkdownPostProcessor(
+      (element: HTMLElement, context: MarkdownPostProcessorContext) => {
+        element.querySelectorAll("p, li").forEach((el: Element) => {
+          if (anyReplacableNodes(el)) {
+            context.addChild(new GoLinkContainer(el as HTMLElement));
+          }
+        });
+      }
+    );
 
-    // Register for editor mode (new functionality)
+    // Register for editing mode(s)
     try {
       this.registerEditorExtension(goLinksEditorExtension());
 
-      // Add CSS for styling go/links in editor
+      // have to style the links created in live preview mode semi-manually
       const styleEl = document.createElement("style");
       styleEl.textContent = `
-        .cm-go-link {
-          color: var(--link-color);
-          text-decoration: underline;
+        .${GOLINK_LIVE_PREVIEW_CLASS} {
           cursor: pointer;
+        }
+        .cm-active .${GOLINK_LIVE_PREVIEW_CLASS} {
+          cursor: text;
         }
       `;
       document.head.appendChild(styleEl);

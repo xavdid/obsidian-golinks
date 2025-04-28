@@ -71,4 +71,4 @@ Under the hood, it:
 ## Contributors
 
 - [David Brownman](https://xavd.id) (@xavdid) - Original author
-- [Alex Mittell](https://github.com/amittell) (@amittell) - Added support for go/links in editor mode
+- [Alex Mittell](https://github.com/amittell) (@amittell) - Added initial implementation for go/links in editor mode

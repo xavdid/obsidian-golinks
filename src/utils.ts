@@ -20,8 +20,14 @@ export const parseNextLink = (
   return { found: true, preText, link, remaining };
 };
 
+export const maybeAddHttp = (s: string) =>
+  s.startsWith("http") ? s : `http://${s}`;
+
+/**
+ * creates an `a` Node for use in reader view (i.e. non-interactive)
+ */
 export const createLinkTag = (el: Element, goLink: string): Element => {
-  const href = goLink.startsWith("http") ? goLink : `http://${goLink}`;
+  const href = maybeAddHttp(goLink);
   // if processing a fully-qualified link, don't show the protocol in the link text (to match other go/links)
   const label = goLink.replace(/https?:\/\//, "");
 

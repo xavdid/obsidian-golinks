@@ -4,7 +4,6 @@ import {
   Plugin,
 } from "obsidian";
 import {
-  GOLINK_HTML_CLASS,
   GOLINK_LIVE_PREVIEW_CLASS,
   goLinksEditorExtension,
 } from "./editor-extension";
@@ -60,11 +59,11 @@ export default class GoLinksPlugin extends Plugin {
       }
     );
 
-    // Register for live-preview mode
+    // Register for editing mode(s)
     try {
       this.registerEditorExtension(goLinksEditorExtension());
 
-      // Add CSS for styling go/links in editor
+      // have to style the links created in live preview mode semi-manually
       const styleEl = document.createElement("style");
       styleEl.textContent = `
         .${GOLINK_LIVE_PREVIEW_CLASS} {
